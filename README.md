@@ -124,11 +124,12 @@ Por buenas prácticas no se incluyen en el repositorio:
 
 ---
 
+## 📱 Repositorio Android
+https://github.com/Danny8ac/GamingBoost-Android
+
 ## 👨‍💻 Autor
 
 Daniel Ochoa  
 Proyecto académico – Desarrollo Fullstack  
 2026
 
-## 📱 Repositorio Android
-https://github.com/Danny8ac/GamingBoost-Android
