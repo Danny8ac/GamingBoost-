@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>GamingBoost • Login</title>
+  <link rel="stylesheet" href="styles.css?v=2"/>
+</head>
+<body>
+
+<div class="container">
+  <div class="nav">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div>GamingBoost</div>
+        <div class="small">Login Web</div>
+      </div>
+    </div>
+    <div class="navlinks">
+      <a class="btn" href="index.html">Inicio</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px; max-width:500px;">
+    <h2>Iniciar sesión</h2>
+
+    <div style="margin-top:12px;">
+      <input class="input" id="email" placeholder="Email"/>
+    </div>
+
+    <div style="margin-top:10px;">
+      <input class="input" id="password" type="password" placeholder="Password"/>
+    </div>
+
+    <div style="margin-top:14px;">
+      <button class="btn primary" id="loginBtn">Entrar</button>
+    </div>
+
+    <div id="msg" class="small" style="margin-top:12px;"></div>
+  </div>
+</div>
+
+<script>
+  const msg = document.getElementById("msg");
+
+  document.getElementById("loginBtn").onclick = async () => {
+    msg.textContent = "Entrando...";
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    const res = await fetch(location.origin + "/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data?.token) {
+      msg.textContent = "❌ Login incorrecto";
+      return;
+    }
+
+    localStorage.setItem("gb_token", data.token);
+    localStorage.setItem("gb_user", JSON.stringify(data.user));
+
+    msg.textContent = "✅ Login correcto";
+    setTimeout(() => location.href = "catalog.html", 600);
+  };
+</script>
+
+</body>
+</html>

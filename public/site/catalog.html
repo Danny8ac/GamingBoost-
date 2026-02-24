@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>GamingBoost • Catálogo</title>
+  <link rel="stylesheet" href="styles.css?v=2"/>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="nav">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <div>GamingBoost</div>
+        <div class="small">Catálogo</div>
+      </div>
+    </div>
+
+    <div class="navlinks">
+      <a class="btn" href="index.html">Inicio</a>
+      <a class="btn" href="orders.html">Mis pedidos</a>
+      <button class="btn danger" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="row" style="justify-content:space-between; align-items:flex-start;">
+      <div>
+        <h2 style="margin:0;">Productos</h2>
+        <div class="muted" style="margin-top:6px;">
+          Compra desde la web usando el mismo backend que la app.
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="reloadBtn">Recargar</button>
+      </div>
+    </div>
+
+    <div id="msg" class="small" style="margin-top:10px;"></div>
+  </div>
+
+  <div id="list" class="list" style="margin-top:12px;"></div>
+
+</div>
+
+<script>
+  const token = localStorage.getItem("gb_token");
+  if (!token) location.href = "login.html";
+
+  const msg = document.getElementById("msg");
+  const list = document.getElementById("list");
+
+  document.getElementById("logoutBtn").onclick = async () => {
+    try {
+      await fetch(location.origin + "/api/logout", {
+        method: "POST",
+        headers: { "Accept":"application/json", "Authorization": "Bearer " + token }
+      });
+    } catch {}
+    localStorage.removeItem("gb_token");
+    localStorage.removeItem("gb_user");
+    location.href = "index.html";
+  };
+
+  document.getElementById("reloadBtn").onclick = () => loadBoosts();
+
+  function addParam(url, key, value){
+    const sep = url.includes("?") ? "&" : "?";
+    return url + sep + encodeURIComponent(key) + "=" + encodeURIComponent(value);
+  }
+
+  async function loadBoosts(){
+    msg.textContent = "Cargando catálogo…";
+    list.innerHTML = "";
+
+    const res = await fetch(location.origin + "/api/boosts", {
+      headers: { "Accept": "application/json", "Authorization": "Bearer " + token }
+    });
+
+    const text = await res.text();
+    let boosts = [];
+    try { boosts = text ? JSON.parse(text) : []; } catch(e){
+      msg.textContent = "❌ Error: respuesta inválida del servidor";
+      console.error(text);
+      return;
+    }
+
+    if (!res.ok){
+      msg.textContent = `❌ Error cargando catálogo (${res.status})`;
+      console.error(boosts);
+      return;
+    }
+
+    if (!Array.isArray(boosts) || boosts.length === 0){
+      msg.textContent = "No hay productos disponibles.";
+      return;
+    }
+
+    msg.textContent = "";
+
+    list.innerHTML = boosts.map(b => `
+      <div class="item">
+        <div class="row" style="justify-content:space-between; align-items:flex-start;">
+          <div style="max-width:700px;">
+            <div style="font-weight:950; font-size:1.1rem;">${escapeHtml(b.title)}</div>
+            <div class="small">${escapeHtml(b.description)}</div>
+          </div>
+
+          <div class="badge" title="Precio">💸 $${b.price}</div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="row" style="justify-content:space-between;">
+          <div class="row">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <span class="small">Cantidad</span>
+              <input class="input" style="width:110px;" type="number" min="1" max="99" value="1" id="qty-${b.id}">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <span class="small">Método</span>
+              <select class="input" style="width:190px;" id="prov-${b.id}">
+                <option value="stripe">Stripe</option>
+                <option value="mercadopago">MercadoPago</option>
+                <option value="paypal">PayPal</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn primary" id="pay-${b.id}" onclick="buy(${b.id})">Pagar</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  async function buy(boostId){
+    const btn = document.getElementById(`pay-${boostId}`);
+    const qty = Number(document.getElementById(`qty-${boostId}`).value || 1);
+    const provider = document.getElementById(`prov-${boostId}`).value;
+
+    btn.disabled = true;
+    btn.textContent = "Procesando…";
+    msg.textContent = "Creando pedido…";
+
+    const createRes = await fetch(location.origin + "/api/orders", {
+      method: "POST",
+      headers: {
+        "Accept":"application/json",
+        "Content-Type":"application/json",
+        "Authorization":"Bearer " + token
+      },
+      body: JSON.stringify({ provider, items: [{ boost_id: boostId, qty }] })
+    });
+
+    const createText = await createRes.text();
+    let createData = null;
+    try { createData = createText ? JSON.parse(createText) : null; } catch {}
+
+    if (!createRes.ok || !createData?.order_id){
+      msg.textContent = `❌ No se pudo crear pedido (${createRes.status})`;
+      console.error(createText);
+      btn.disabled = false;
+      btn.textContent = "Pagar";
+      return;
+    }
+
+    const orderId = createData.order_id;
+
+    msg.textContent = "Abriendo pasarela…";
+    const payRes = await fetch(location.origin + `/api/orders/${orderId}/pay`, {
+      method: "POST",
+      headers: { "Accept":"application/json", "Authorization":"Bearer " + token }
+    });
+
+    const payText = await payRes.text();
+    let payData = null;
+    try { payData = payText ? JSON.parse(payText) : null; } catch {}
+
+    if (!payRes.ok || !payData?.checkout_url){
+      msg.textContent = `❌ No se pudo iniciar pago (${payRes.status})`;
+      console.error(payText);
+      btn.disabled = false;
+      btn.textContent = "Pagar";
+      return;
+    }
+
+    window.location.href = addParam(payData.checkout_url, "from", "web");
+  }
+
+  function escapeHtml(str){
+    return String(str ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  loadBoosts();
+</script>
+
+</body>
+</html>

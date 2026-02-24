@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>GamingBoost • Inicio</title>
+  <link rel="stylesheet" href="styles.css?v=2"/>
+  <style>
+    /* solo para index: layout más minimal */
+    .heroWrap{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      align-items:stretch;
+    }
+    @media(max-width: 920px){
+      .heroWrap{ grid-template-columns: 1fr; }
+    }
+    .hero{
+      padding:22px;
+      min-height: 280px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(234,240,255,.82);
+      font-weight:900;
+      width: fit-content;
+    }
+    .headline{
+      margin:14px 0 10px;
+      font-size: clamp(1.8rem, 4vw, 2.45rem);
+      line-height:1.05;
+      font-weight: 950;
+      letter-spacing: -0.02em;
+    }
+    .subline{
+      max-width: 62ch;
+      font-size: 1.02rem;
+      color: rgba(234,240,255,.74);
+      line-height: 1.55;
+    }
+    .ctaRow{ margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+    .miniRow{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .miniStat{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(234,240,255,.78);
+      font-weight:850;
+      font-size:.92rem;
+    }
+
+    .statusCard{ padding:18px; }
+    .statusTitle{ font-weight:950; font-size:1.05rem; }
+    .statusLine{
+      display:flex; justify-content:space-between; align-items:center;
+      margin-top:12px;
+    }
+    .divider{ height:1px; background: rgba(255,255,255,.10); margin:14px 0; }
+
+    .belowGrid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+    }
+    @media(max-width: 920px){
+      .belowGrid{ grid-template-columns: 1fr; }
+    }
+    .miniCard{
+      padding:14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.035));
+      box-shadow: 0 16px 40px rgba(0,0,0,.22);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .miniCardTitle{ font-weight:950; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- NAV -->
+    <div class="nav">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <div>GamingBoost</div>
+          <div class="small">Website</div>
+        </div>
+      </div>
+
+      <div class="navlinks">
+        <a class="btn" href="login.html">Login</a>
+        <a class="btn primary" href="catalog.html">Catálogo</a>
+      </div>
+    </div>
+
+    <!-- HERO + STATUS -->
+    <div class="heroWrap">
+      <div class="card hero">
+        <div class="kicker">⚡ Boosts • Coaching • Duo</div>
+
+        <div class="headline">
+          Sube de rango.<br/>Sin perder tiempo.
+        </div>
+
+        <div class="subline">
+          Una sola cuenta para tu <b>app Android</b> y esta <b>web</b>.
+          Compra boosts, paga con checkout simulado y revisa tus pedidos al instante.
+        </div>
+
+        <div class="ctaRow">
+          <a class="btn primary" href="catalog.html">Ver catálogo</a>
+          <a class="btn" href="orders.html">Mis pedidos</a>
+        </div>
+
+        <div class="miniRow">
+          <span class="miniStat">🔒 Token Auth</span>
+          <span class="miniStat">💳 Checkout</span>
+          <span class="miniStat">📦 Orders</span>
+        </div>
+
+        <div class="small" style="margin-top:10px;">
+          Tip: emulador <b>10.0.2.2</b> • PC <b>127.0.0.1</b>
+        </div>
+      </div>
+
+      <div class="card statusCard">
+        <div class="statusTitle">Estado</div>
+        <div class="small" style="margin-top:6px;">
+          Conectado al mismo backend de tu app.
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="statusLine">
+          <div class="small">API</div>
+          <span class="badge" id="apiBadge">⏳ probando…</span>
+        </div>
+
+        <div class="statusLine">
+          <div class="small">Sesión</div>
+          <span class="badge" id="sessionBadge">—</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="small">
+          Minimal UI estilo gamer. Todo el flujo real sigue funcionando.
+        </div>
+      </div>
+    </div>
+
+    <!-- BELOW -->
+    <div class="belowGrid">
+      <div class="miniCard">
+        <div class="miniCardTitle">✅ Integrado</div>
+        <div class="small" style="margin-top:6px;">
+          Web y Android comparten login, catálogo y pedidos.
+        </div>
+      </div>
+
+      <div class="miniCard">
+        <div class="miniCardTitle">⚡ Rápido</div>
+        <div class="small" style="margin-top:6px;">
+          Checkout en 1 click y regreso automático a pedidos.
+        </div>
+      </div>
+
+      <div class="miniCard">
+        <div class="miniCardTitle">🎮 Estilo</div>
+        <div class="small" style="margin-top:6px;">
+          Glass + gradients, inspirado en sitios tipo ezlol.
+        </div>
+      </div>
+    </div>
+
+    <div class="small" style="margin-top:18px; opacity:.9;">
+      © GamingBoost — web demo conectada al mismo Laravel API.
+    </div>
+
+  </div>
+
+  <script>
+    async function ping(){
+      const apiBadge = document.getElementById("apiBadge");
+      const sessionBadge = document.getElementById("sessionBadge");
+
+      const token = localStorage.getItem("gb_token");
+      const userRaw = localStorage.getItem("gb_user");
+      const user = userRaw ? JSON.parse(userRaw) : null;
+
+      sessionBadge.textContent = token ? `👤 ${user?.name ?? "Logueado"}` : "Sin sesión";
+
+      try{
+        const res = await fetch(location.origin + "/api/ping", { headers: { "Accept":"application/json" } });
+        apiBadge.textContent = res.ok ? "✅ online" : "⚠️ error";
+        apiBadge.className = res.ok ? "badge ok" : "badge warn";
+      }catch{
+        apiBadge.textContent = "❌ offline";
+        apiBadge.className = "badge bad";
+      }
+    }
+    ping();
+  </script>
+</body>
+</html>
