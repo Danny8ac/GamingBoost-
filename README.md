@@ -5,7 +5,7 @@ GamingBoost es una plataforma fullstack para la compra de servicios de boosting 
 El proyecto incluye:
 
 - 📱 App Android (Kotlin + Jetpack Compose)
-- 🌐 Web frontend (HTML, CSS, JS)
+- 🌐 Web frontend (HTML, CSS, JavaScript)
 - 🧠 Backend API (Laravel + Sanctum)
 - 💳 Sistema de pedidos con checkout simulado
 
@@ -16,7 +16,7 @@ El proyecto incluye:
 ### Backend
 - PHP 8+
 - Laravel
-- Laravel Sanctum (auth por token)
+- Laravel Sanctum (autenticación por token)
 - MySQL
 
 ### App Android
@@ -27,14 +27,14 @@ El proyecto incluye:
 
 ### Web
 - HTML5
-- CSS3 (Glass / Gradient UI)
+- CSS3 (Glass UI / Gradients estilo gamer)
 - JavaScript (Fetch API)
 
 ---
 
 ## 🚀 Instalación del proyecto
 
-### 1️⃣ Clonar el repositorio
+### 1️⃣ Clonar repositorio
 
 ```bash
 git clone https://github.com/Danny8ac/GamingBoost-.git
