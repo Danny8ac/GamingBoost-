@@ -31,6 +31,9 @@ Incluye:
 
 ---
 
+## 📱 Repositorio Android
+- https://github.com/Danny8ac/GamingBoost-Android
+
 ## 🚀 Instalación (Backend Laravel)
 
 ### 1) Clonar repositorio
